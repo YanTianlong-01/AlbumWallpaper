@@ -12,7 +12,8 @@ AlbumWallpaper是一款基于python开发的，跨平台的专辑墙壁纸生成
 
 ## 壁纸展示
 
-![album_wall-1](https://github.com/user-attachments/assets/39c977ad-733c-4330-aa22-460a5a671907)
+![album_wall](https://github.com/user-attachments/assets/80c570df-cf1c-480e-9def-b2fc4ab3b581)
+
 
 
 ![album_wall](https://github.com/user-attachments/assets/10544e72-371f-4356-bdbf-995374fb88d8)
