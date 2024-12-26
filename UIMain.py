@@ -16,10 +16,11 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("专辑墙纸制作器")
-        self.geometry("600x550")  # 设置窗口大小
+        self.geometry("600x660")  # 设置窗口大小
         self.download_path = BASE_DIR  # 默认路径
-        self.save_path = None
-        self.wallpaper_path = None
+        self.save_path = None # 下载的歌曲封面存放的地方，是wallpaper_path/covers，这个文件夹是自动创建的
+        self.wallpaper_path = None # covers文件夹保存的位置，这个路径可以用户自己选择的
+        self.covers_path = BASE_DIR # 壁纸的制作素材选取的路径，这个路径也可以用户自己选择。当批量下载完歌曲封面后，这个路径会自动赋值为 save_path
         self.max_songs = None
         self.load_settings()
         self.init_ui()
@@ -30,14 +31,18 @@ class App(tk.Tk):
             with open(SETTINGS_FILE, "r") as f:
                 settings = json.load(f)
                 self.download_path = settings.get("download_path", BASE_DIR)
-                self.save_path = self.download_path
+                self.covers_path = settings.get("covers_path", BASE_DIR)
+                # self.save_path = self.download_path
         except FileNotFoundError:
             pass  # Use default values if the file doesn't exist
         except json.JSONDecodeError:
             pass # Use default values if the file is corrupted
 
     def save_settings(self):
-        settings = {"download_path": self.download_path}
+        settings = {
+            "download_path": self.download_path,
+            "covers_path" : self.covers_path
+            }
         with open(SETTINGS_FILE, "w") as f:
             json.dump(settings, f)
 
@@ -73,7 +78,7 @@ class App(tk.Tk):
 
         # 下载路径部分
         path_frame = tk.Frame(self)
-        path_frame.pack(pady=10)
+        path_frame.pack(pady=5)
 
         select_folder_button = tk.Button(
             path_frame, text="选择下载路径", command=self.select_folder, font=(12)
@@ -85,6 +90,21 @@ class App(tk.Tk):
         )
         self.download_path_label.grid(row=0, column=1, padx=5, pady=5)
         self.update_download_path_label()
+
+        # covers路径部分
+        cover_path_frame = tk.Frame(self)
+        cover_path_frame.pack(pady=5)
+
+        select_folder_button = tk.Button(
+            cover_path_frame, text="选择封面制作路径", command=self.select_cover_folder, font=(12)
+        )
+        select_folder_button.grid(row=0, column=0, padx=5, pady=5)
+
+        self.cover_path_label = tk.Label(
+            cover_path_frame, text=" ", font=(12)
+        )
+        self.cover_path_label.grid(row=0, column=1, padx=5, pady=5)
+        self.update_cover_path_label()
 
         # 进度条部分
         self.progress_bar = Progressbar(self, orient="horizontal", length=400, mode="determinate")
@@ -138,7 +158,13 @@ class App(tk.Tk):
         if folder_path:
             self.download_path = folder_path
             self.update_download_path_label()
-            self.save_path = folder_path
+            self.save_settings()
+
+    def select_cover_folder(self):
+        folder_path = filedialog.askdirectory(initialdir=self.covers_path)
+        if folder_path:
+            self.covers_path = folder_path
+            self.update_cover_path_label()
             self.save_settings()
 
     def update_download_path_label(self):
@@ -149,6 +175,14 @@ class App(tk.Tk):
         else:
             self.download_path_label.config(text=" " + self.download_path)
 
+    def update_cover_path_label(self):
+        parts = self.covers_path.split('/')
+        if len(parts) > 4:
+            truncated_path = "/".join(parts[:3]) + "/.../" + "/".join(parts[-2:])
+            self.cover_path_label.config(text=" " + truncated_path)
+        else:
+            self.cover_path_label.config(text=" " + self.covers_path)
+
     def start_download(self):
         playlist_url = self.playlist_entry.get()
         if playlist_url:
@@ -156,17 +190,21 @@ class App(tk.Tk):
             self.max_songs = self.max_songs_entry.get()
             # 假设 downloadCover 是实现的下载函数
             self.save_path = downloadCover(playlist_url, self.progress_bar, self, self.download_path, self.max_songs)
+            print('save_path', self.save_path)
             if not self.save_path:
-                messagebox.showerror('请输入正确的网易云歌单链接!')
+                messagebox.showerror("错误", '下载失败')
+                self.info_status_label("下载失败，请检查歌单链接，网络状态，然后尝试重新下载")
             else:
                 self.info_status_label(f"封面已下载完成，保存在文件夹: {self.save_path}")
+                self.covers_path = self.save_path
+                self.update_cover_path_label()
         else:
             messagebox.showerror("错误", "请输入歌单链接")
         self.progress_bar['value'] = 0
         self.update()
 
     def start_create_wallpaper(self):
-        if self.save_path:
+        if self.covers_path:
             self.info_status_label("创建壁纸中...")
 
             width = self.width_entry.get()
@@ -178,7 +216,7 @@ class App(tk.Tk):
                 messagebox.showerror("错误", "请在壁纸高宽设置中输入纯数字！")
                 self.clear_status_label()
                 return
-            self.wallpaper_path = createWallpaper(self.save_path)
+            self.wallpaper_path = createWallpaper(self.covers_path, width, height)
             if not self.wallpaper_path:
                 messagebox.showerror("错误", "请在确保路径中存在图片！")
                 self.clear_status_label()

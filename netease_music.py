@@ -17,7 +17,11 @@ COOKIES = {"os": "pc"}
 
 def get_play_list(playlist_id):
     url = f"http://music.163.com/playlist?id={playlist_id}" 
-    contents = requests.get(url, headers=HEADERS, cookies=COOKIES).text
+    try:
+        contents = requests.get(url, headers=HEADERS, cookies=COOKIES).text
+    except requests.exceptions.RequestException as e:
+            print("请求出错:", e)
+            return False
 
     playlist_name = re.search(r"<title>(.+)</title>", contents).group(1)[:-13]
 
@@ -29,7 +33,11 @@ def get_play_list(playlist_id):
 
 def get_song_info(song_id):
     url = f"http://music.163.com/song?id={song_id}"
-    contents = requests.get(url, headers=HEADERS, cookies=COOKIES).text
+    try:
+        contents = requests.get(url, headers=HEADERS, cookies=COOKIES).text
+    except requests.exceptions.RequestException as e:
+            print("请求出错:", e)
+            return False
 
     pattern = r'<meta property="og:music:artist" content="(.+?)".?/>'
     artist = re.search(pattern, contents).group(1)
@@ -133,8 +141,11 @@ def download_covers(song_infos, folder_path, progress_bar, root):
             progress_bar['value'] = i + 1
             root.update()
             continue
-
-        r = requests.get(cover_path)
+        try:
+            r = requests.get(cover_path)
+        except requests.exceptions.RequestException as e:
+            print("请求出错:", e)
+            return False
         if r.status_code == 200:
             with open(save_path, "wb") as f:
                 f.write(r.content)
@@ -150,11 +161,17 @@ def download_covers(song_infos, folder_path, progress_bar, root):
 def netease_music(paly_list_id, folder_path, progress_bar, root, max_songs=False):
     cache_path = os.path.join(folder_path,'songs')
     os.makedirs(cache_path, exist_ok=True)
-
-    playlist_name, song_list = get_play_list(paly_list_id)
+    try:
+        playlist_name, song_list = get_play_list(paly_list_id)
+    except:
+        print('获取歌单错误')
+        return False
     # print(song_list)
-
-    song_infos = get_all_song_info(song_list, cache_path, progress_bar, root, max_songs)
+    try:
+        song_infos = get_all_song_info(song_list, cache_path, progress_bar, root, max_songs)
+    except:
+        print("获取歌曲信息错误")
+        return False
     save_path = download_covers(song_infos, folder_path, progress_bar, root)
     return save_path
 

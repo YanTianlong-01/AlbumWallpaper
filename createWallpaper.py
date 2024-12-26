@@ -2,7 +2,7 @@ import os
 from PIL import Image
 import math
 
-def createWallpaper(image_folder):
+def createWallpaper(image_folder, width=1920, height=1080):
     if not image_folder:
         return False
     
@@ -20,8 +20,8 @@ def createWallpaper(image_folder):
         return None
 
     # 输出图像的宽高比为 16:9
-    output_width = 1920
-    output_height = 1080
+    output_width = width
+    output_height = height
     aspect_ratio = output_width / output_height
 
     # 读取所有图片并调整为正方形
@@ -39,10 +39,12 @@ def createWallpaper(image_folder):
 
         images.append(img_cropped)
 
-    # 计算行列数，尽量填满整个16:9区域
+
     n = len(images)
-    columns = math.ceil(math.sqrt(n * aspect_ratio))  # 列数根据宽高比调整
-    rows = math.ceil(n / columns)
+    columns = round(math.sqrt(n * aspect_ratio))  # 列数根据宽高比调整
+    rows = round(n / columns)
+
+
 
     # 每个正方形图片在最终拼接图中的大小
     cell_width = output_width // columns
