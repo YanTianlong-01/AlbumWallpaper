@@ -22,3 +22,17 @@ AlbumWallpaper是一款基于python开发的，跨平台的专辑墙壁纸生成
 ## 应用展示
 
 <img width="600" alt="image" src="https://github.com/user-attachments/assets/5f61cddf-9deb-4797-810d-8f596ab6afbd" />
+
+## 使用方法
+
+### UI界面
+直接在[Release](https://github.com/YanTianlong-01/AlbumWallpaper/releases)中下载对应平台的App即可
+
+### Python运行
+- 环境：python3.10
+- 拉取：`git clone https://github.com/YanTianlong-01/AlbumWallpaper.git`
+- 创建虚拟环境：`python -m venv venv`
+- 激活虚拟环境：Windows `.\venv\Scripts\activate`   macOS `source ./venv/bin/activate`
+- 安装依赖：`pip install -r requirement.txt`
+- 运行App：`python UIMain.py`
+- 退出虚拟环境：`deactivate`
