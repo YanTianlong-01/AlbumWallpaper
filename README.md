@@ -42,3 +42,7 @@ AlbumWallpaper是一款基于python开发的，跨平台的专辑墙壁纸生成
 - 安装依赖：`pip install -r requirement.txt`
 - 运行App：`python UIMain.py`，弹出UI界面，按上述操作即可。
 - 退出虚拟环境：`deactivate`
+
+
+## 致谢
+爬虫部分参考了 [Flowing-CD-Wall](https://github.com/elliottzheng/Flowing-CD-Wall/blob/master/download_netease_music_playlist.py)
