@@ -26,7 +26,7 @@ AlbumWallpaper是一款基于python开发的，跨平台的专辑墙壁纸生成
 
 ## 使用方法
 
-### UI界面
+### 方法1：UI界面
 直接在[Release](https://github.com/YanTianlong-01/AlbumWallpaper/releases)中下载对应平台的App即可
 - 输入歌单链接：目前仅支持网易云音乐
 - 输入最大下载歌曲数量：默认为空，即全部下载（如果太多图片，制作出来的壁纸也不好看）
@@ -34,7 +34,7 @@ AlbumWallpaper是一款基于python开发的，跨平台的专辑墙壁纸生成
 - 选择封面制作路径：在点击【制作壁纸】按钮时，App获取此路径下所有的图片，用来制作壁纸
 - 壁纸宽度和高度：默认为1920x1080，单位是像素
 
-### Python运行
+### 方法2：Python运行
 - 环境：python3.10
 - 拉取：`git clone https://github.com/YanTianlong-01/AlbumWallpaper.git`
 - 创建虚拟环境：`python -m venv venv`
