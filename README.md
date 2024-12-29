@@ -40,7 +40,7 @@ AlbumWallpaper是一款基于python开发的，跨平台的专辑墙壁纸生成
 - 创建虚拟环境：`python -m venv venv`
 - 激活虚拟环境：Windows `.\venv\Scripts\activate`   macOS `source ./venv/bin/activate`
 - 安装依赖：`pip install -r requirement.txt`
-- 运行App：`python UIMain.py`，弹出UI界面，按上述操作即可。
+- 运行App：`python UIMain.py`，弹出UI界面，按上述方法1的操作即可。
 - 退出虚拟环境：`deactivate`
 
 
